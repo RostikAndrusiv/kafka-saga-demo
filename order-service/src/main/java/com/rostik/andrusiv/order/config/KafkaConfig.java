@@ -1,6 +1,7 @@
 package com.rostik.andrusiv.order.config;
 
 import com.rostik.andrusiv.core.exception.CreditCardProcessorUnavailableException;
+import com.rostik.andrusiv.core.exception.OrderNotFoundException;
 import com.rostik.andrusiv.core.exception.ProductInsufficientQuantityException;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -89,7 +90,7 @@ public class KafkaConfig {
     ConcurrentKafkaListenerContainerFactory<String, Object> kafkaListenerContainerFactory(ConsumerFactory<String, Object> consumerFactory, KafkaTemplate<String, Object> kafkaTemplate) {
         ConcurrentKafkaListenerContainerFactory<String, Object> containerFactory = new ConcurrentKafkaListenerContainerFactory<>();
         DefaultErrorHandler errorHandler = new DefaultErrorHandler(new DeadLetterPublishingRecoverer(kafkaTemplate));
-        errorHandler.addNotRetryableExceptions(ProductInsufficientQuantityException.class);
+        errorHandler.addNotRetryableExceptions(OrderNotFoundException.class, ProductInsufficientQuantityException.class);
         errorHandler.addRetryableExceptions(CreditCardProcessorUnavailableException.class);
         containerFactory.setConsumerFactory(consumerFactory);
         containerFactory.setCommonErrorHandler(errorHandler);

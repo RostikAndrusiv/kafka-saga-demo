@@ -3,6 +3,7 @@ package com.rostik.andrusiv.order.service;
 import com.rostik.andrusiv.core.dto.Order;
 import com.rostik.andrusiv.core.dto.event.OrderApprovedEvent;
 import com.rostik.andrusiv.core.dto.event.OrderCreatedEvent;
+import com.rostik.andrusiv.core.exception.OrderNotFoundException;
 import com.rostik.andrusiv.core.type.OrderStatus;
 import com.rostik.andrusiv.order.jpa.entity.OrderEntity;
 import com.rostik.andrusiv.order.jpa.repository.OrderRepository;
@@ -10,6 +11,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -45,9 +47,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public void approveOrder(UUID orderId) {
         OrderEntity entity = orderRepository.findById(orderId)
-                .orElseThrow(()-> new RuntimeException("Order not found"));
+                .orElseThrow(()-> new OrderNotFoundException("Order not found"));
         entity.setStatus(OrderStatus.APPROVED);
         orderRepository.save(entity);
         OrderApprovedEvent orderApprovedEvent= new OrderApprovedEvent(orderId);
@@ -56,11 +59,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public void rejectOrder(UUID orderId) {
         OrderEntity order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+                .orElseThrow(() -> new OrderNotFoundException("Order not found"));
         order.setStatus(OrderStatus.REJECTED);
-        orderRepository.save(order);
     }
 
     private void sendPlacedOrderEvent(Order order, OrderEntity entity) {
