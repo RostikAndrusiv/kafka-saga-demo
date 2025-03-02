@@ -1,0 +1,18 @@
+package com.rostik.andrusiv.core.dto.event;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.util.UUID;
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+public class PaymentFailedEvent {
+    private UUID orderId;
+    private UUID productId;
+    private Integer productQuantity;
+}

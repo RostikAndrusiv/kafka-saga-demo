@@ -30,3 +30,11 @@ spring:
       properties:
         spring.json.trusted.packages: com.rostik.andrusiv.core.*
         allow.auto.create.topics: false
+
+product:
+  commands:
+    topic:
+      name: "product-commands"
+  events:
+    topic:
+      name: "product-events"

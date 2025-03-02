@@ -21,3 +21,27 @@ spring:
       group-id: orders-ms
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: com.rostik.andrusiv.core.*
+
+order:
+  events:
+    topic:
+      name: "orders-events"
+  commands:
+    topic:
+      name: "order-commands"
+product:
+  evants:
+    topic:
+      name: "product-events"
+  commands:
+    topic:
+      name: "product-commands"
+payment:
+  events:
+    topic:
+      name: "payment-events"
+  commands:
+    topic:
+      name: "payment-commands"

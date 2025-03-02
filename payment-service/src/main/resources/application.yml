@@ -34,3 +34,10 @@ spring:
 remote:
   ccp:
     url: http://localhost:8084
+payment:
+  commands:
+    topic:
+      name: "payment-commands"
+  events:
+    topic:
+      name: "payment-events"
