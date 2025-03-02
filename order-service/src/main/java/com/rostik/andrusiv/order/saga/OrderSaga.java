@@ -54,7 +54,7 @@ public class OrderSaga {
     }
 
     @KafkaHandler
-    public void handleProductReservedEvent(@Payload PaymentProcessedEvent event) {
+    public void handlePaymentProcessedEventEvent(@Payload PaymentProcessedEvent event) {
         ApproveOrderCommand command = new ApproveOrderCommand(event.getOrderId());
         kafkaTemplate.send(orderCommandsTopicName, command);
     }
