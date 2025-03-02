@@ -40,8 +40,8 @@ public class OrderSaga {
     public void handleOrderCreatedEvent(@Payload OrderCreatedEvent orderCreatedEvent) {
         ReserveProductCommand reserveProductCommand = new ReserveProductCommand();
         BeanUtils.copyProperties(orderCreatedEvent, reserveProductCommand);
-
-        kafkaTemplate.send(productsCommandTopicName, reserveProductCommand);
+        String messageKey = orderCreatedEvent.getOrderId().toString();
+        kafkaTemplate.send(productsCommandTopicName, messageKey, reserveProductCommand);
         orderHistoryService.add(orderCreatedEvent.getOrderId(), OrderStatus.CREATED);
     }
 
@@ -49,14 +49,15 @@ public class OrderSaga {
     public void handleProductReservedEvent(@Payload ProductReservedEvent event) {
         ProcessPaymentCommand processPaymentCommand = new ProcessPaymentCommand(
                 event.getOrderId(), event.getProductId(), event.getProductPrice(), event.getProductQuantity());
-
-        kafkaTemplate.send(paymentCommandsTopicName, processPaymentCommand);
+        String messageKey = event.getOrderId().toString();
+        kafkaTemplate.send(paymentCommandsTopicName, messageKey, processPaymentCommand);
     }
 
     @KafkaHandler
     public void handlePaymentProcessedEventEvent(@Payload PaymentProcessedEvent event) {
         ApproveOrderCommand command = new ApproveOrderCommand(event.getOrderId());
-        kafkaTemplate.send(orderCommandsTopicName, command);
+        String messageKey = event.getOrderId().toString();
+        kafkaTemplate.send(orderCommandsTopicName, messageKey, command);
     }
 
     @KafkaHandler
@@ -68,13 +69,15 @@ public class OrderSaga {
     public void handlePaymentFailedEvent(@Payload PaymentFailedEvent event) {
         CancelProductReservationCommand command = new CancelProductReservationCommand(
                 event.getProductId(), event.getOrderId(), event.getProductQuantity());
-        kafkaTemplate.send(productsCommandTopicName, command);
+        String messageKey = event.getOrderId().toString();
+        kafkaTemplate.send(productsCommandTopicName, messageKey, command);
     }
 
     @KafkaHandler
     public void handleProductReservationCancelledEvent(@Payload ProductReservationCancelledEvent event) {
         RejectOrderCommand command = new RejectOrderCommand(event.getOrderId());
-        kafkaTemplate.send(orderCommandsTopicName, command);
+        String messageKey = event.getOrderId().toString();
+        kafkaTemplate.send(orderCommandsTopicName, messageKey, command);
         orderHistoryService.add(event.getOrderId(), OrderStatus.REJECTED);
     }
 }

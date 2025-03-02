@@ -54,7 +54,8 @@ public class OrderServiceImpl implements OrderService {
         entity.setStatus(OrderStatus.APPROVED);
         orderRepository.save(entity);
         OrderApprovedEvent orderApprovedEvent= new OrderApprovedEvent(orderId);
-        kafkaTemplate.send(ordersEventTopicName, orderApprovedEvent);
+        String messageKey = orderId.toString();
+        kafkaTemplate.send(ordersEventTopicName, messageKey, orderApprovedEvent);
 
     }
 
@@ -74,6 +75,7 @@ public class OrderServiceImpl implements OrderService {
                 order.getProductQuantity()
         );
 
-        kafkaTemplate.send(ordersEventTopicName, placedOrder);
+        String messageKey = order.getOrderId().toString();
+        kafkaTemplate.send(ordersEventTopicName, messageKey, placedOrder);
     }
 }

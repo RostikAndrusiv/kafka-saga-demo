@@ -30,18 +30,20 @@ public class PaymentCommandsHandler {
     public void handleProcessPaymentCommand(@Payload ProcessPaymentCommand command) {
         Payment payment = new Payment(command.getOrderId(), command.getProductId(),
                 command.getProductPrice(), command.getProductQuantity());
+        String messageKey = command.getOrderId().toString();
+
         try {
             Payment processedPayment = paymentService.process(payment);
             PaymentProcessedEvent paymentProcessedEvent = new PaymentProcessedEvent(
                     processedPayment.getOrderId(), processedPayment.getId());
 
-            kafkaTemplate.send(paymentEventsTopicName, paymentProcessedEvent);
+            kafkaTemplate.send(paymentEventsTopicName, messageKey, paymentProcessedEvent);
         } catch (Exception e) {
             log.error("Error processing payment {}", command.getProductId(), e);
             PaymentFailedEvent paymentFailedEvent = new PaymentFailedEvent(
                     command.getOrderId(), command.getProductId(), command.getProductQuantity());
 
-            kafkaTemplate.send(paymentEventsTopicName, paymentFailedEvent);
+            kafkaTemplate.send(paymentEventsTopicName, messageKey, paymentFailedEvent);
         }
     }
 

@@ -33,18 +33,19 @@ public class ProductCommandHandler {
                 .id(command.getProductId())
                 .quantity(command.getProductQuantity())
                 .build();
+        String messageKey = command.getOrderId().toString();
 
         try {
             Product reservedProduct = productService.reserve(desiredProduct, command.getProductId());
             ProductReservedEvent productReservedEvent = new ProductReservedEvent(
                     command.getOrderId(), command.getProductId(), reservedProduct.getPrice(),
                     command.getProductQuantity());
-            kafkaTemplate.send(productEventsTopicName, productReservedEvent);
+            kafkaTemplate.send(productEventsTopicName, messageKey, productReservedEvent);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             ProductReservationFailedEvent productReservationFailedEvent = new ProductReservationFailedEvent(
                     command.getProductId(), command.getOrderId(), command.getProductQuantity());
-            kafkaTemplate.send(productEventsTopicName, productReservationFailedEvent);
+            kafkaTemplate.send(productEventsTopicName, messageKey, productReservationFailedEvent);
         }
     }
 
@@ -56,6 +57,7 @@ public class ProductCommandHandler {
         ProductReservationCancelledEvent productReservationCancelledEvent =
                 new ProductReservationCancelledEvent(command.getProductId(), command.getOrderId());
 
-        kafkaTemplate.send(productEventsTopicName, productReservationCancelledEvent);
+        String messageKey = command.getOrderId().toString();
+        kafkaTemplate.send(productEventsTopicName, messageKey, productReservationCancelledEvent);
     }
 }
