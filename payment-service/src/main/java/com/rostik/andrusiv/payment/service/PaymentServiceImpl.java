@@ -33,13 +33,9 @@ public class PaymentServiceImpl implements PaymentService {
         log.info("Processing payment for Order ID: {}, Product ID: {}, Total Price: {}",
                 payment.getOrderId(), payment.getProductId(), totalPrice);
 
-        try {
-            ccpRemoteService.process(new BigInteger(SAMPLE_CREDIT_CARD_NUMBER), totalPrice);
-            log.info("Credit card payment processed successfully for Order ID: {}", payment.getOrderId());
-        } catch (Exception e) {
-            log.error("Error processing payment for Order ID: {}", payment.getOrderId(), e);
-            throw e;  // rethrow or handle appropriately
-        }
+
+        ccpRemoteService.process(new BigInteger(SAMPLE_CREDIT_CARD_NUMBER), totalPrice);
+        log.info("Credit card payment processed successfully for Order ID: {}", payment.getOrderId());
 
         PaymentEntity paymentEntity = new PaymentEntity();
         BeanUtils.copyProperties(payment, paymentEntity);
