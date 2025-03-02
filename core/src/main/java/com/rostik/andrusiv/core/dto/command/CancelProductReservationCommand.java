@@ -2,15 +2,13 @@ package com.rostik.andrusiv.core.dto.command;
 
 import lombok.*;
 
-import java.math.BigDecimal;
 import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class ProcessPaymentCommand {
-    private UUID orderId;
+public class CancelProductReservationCommand {
     private UUID productId;
-    private BigDecimal productPrice;
+    private UUID orderId;
     private Integer productQuantity;
 }

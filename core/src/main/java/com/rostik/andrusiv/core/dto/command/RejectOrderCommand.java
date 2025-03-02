@@ -1,12 +1,14 @@
 package com.rostik.andrusiv.core.dto.command;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class ApproveOrderCommand {
+public class RejectOrderCommand {
     private UUID orderId;
 }

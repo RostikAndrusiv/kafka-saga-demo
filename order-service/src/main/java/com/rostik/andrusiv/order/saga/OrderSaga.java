@@ -1,12 +1,7 @@
 package com.rostik.andrusiv.order.saga;
 
-import com.rostik.andrusiv.core.dto.command.ApproveOrderCommand;
-import com.rostik.andrusiv.core.dto.command.ProcessPaymentCommand;
-import com.rostik.andrusiv.core.dto.command.ReserveProductCommand;
-import com.rostik.andrusiv.core.dto.event.OrderApprovedEvent;
-import com.rostik.andrusiv.core.dto.event.OrderCreatedEvent;
-import com.rostik.andrusiv.core.dto.event.PaymentProcessedEvent;
-import com.rostik.andrusiv.core.dto.event.ProductReservedEvent;
+import com.rostik.andrusiv.core.dto.command.*;
+import com.rostik.andrusiv.core.dto.event.*;
 import com.rostik.andrusiv.core.type.OrderStatus;
 import com.rostik.andrusiv.order.service.OrderHistoryService;
 import org.springframework.beans.BeanUtils;
@@ -67,5 +62,19 @@ public class OrderSaga {
     @KafkaHandler
     public void handleOrderApprovedEvent(@Payload OrderApprovedEvent event) {
         orderHistoryService.add(event.getOrderId(), OrderStatus.APPROVED);
+    }
+
+    @KafkaHandler
+    public void handlePaymentFailedEvent(@Payload PaymentFailedEvent event) {
+        CancelProductReservationCommand command = new CancelProductReservationCommand(
+                event.getProductId(), event.getOrderId(), event.getProductQuantity());
+        kafkaTemplate.send(productsCommandTopicName, command);
+    }
+
+    @KafkaHandler
+    public void handleProductReservationCancelledEvent(@Payload ProductReservationCancelledEvent event) {
+        RejectOrderCommand command = new RejectOrderCommand(event.getOrderId());
+        kafkaTemplate.send(orderCommandsTopicName, command);
+        orderHistoryService.add(event.getOrderId(), OrderStatus.REJECTED);
     }
 }

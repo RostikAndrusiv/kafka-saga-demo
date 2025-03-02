@@ -1,15 +1,11 @@
 package com.rostik.andrusiv.core.dto;
 
 import com.rostik.andrusiv.core.type.OrderStatus;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.UUID;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Order {
@@ -18,11 +14,4 @@ public class Order {
     private UUID productId;
     private Integer productQuantity;
     private OrderStatus status;
-
-    public Order(UUID customerId, UUID productId, Integer productQuantity, OrderStatus status) {
-        this.customerId = customerId;
-        this.productId = productId;
-        this.productQuantity = productQuantity;
-        this.status = status;
-    }
 }

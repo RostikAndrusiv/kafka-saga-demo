@@ -55,6 +55,14 @@ public class OrderServiceImpl implements OrderService {
 
     }
 
+    @Override
+    public void rejectOrder(UUID orderId) {
+        OrderEntity order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+        order.setStatus(OrderStatus.REJECTED);
+        orderRepository.save(order);
+    }
+
     private void sendPlacedOrderEvent(Order order, OrderEntity entity) {
         OrderCreatedEvent placedOrder = new OrderCreatedEvent(
                 entity.getId(),

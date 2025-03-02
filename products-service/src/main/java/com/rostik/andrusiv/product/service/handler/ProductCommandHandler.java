@@ -1,7 +1,9 @@
 package com.rostik.andrusiv.product.service.handler;
 
 import com.rostik.andrusiv.core.dto.Product;
+import com.rostik.andrusiv.core.dto.command.CancelProductReservationCommand;
 import com.rostik.andrusiv.core.dto.command.ReserveProductCommand;
+import com.rostik.andrusiv.core.dto.event.ProductReservationCancelledEvent;
 import com.rostik.andrusiv.core.dto.event.ProductReservationFailedEvent;
 import com.rostik.andrusiv.core.dto.event.ProductReservedEvent;
 import com.rostik.andrusiv.product.service.ProductService;
@@ -44,5 +46,16 @@ public class ProductCommandHandler {
                     command.getProductId(), command.getOrderId(), command.getProductQuantity());
             kafkaTemplate.send(productEventsTopicName, productReservationFailedEvent);
         }
+    }
+
+    @KafkaHandler
+    public void handleCancelProductReservationCommand(@Payload CancelProductReservationCommand command) {
+        Product productToCancel = new Product(command.getProductId(), command.getProductQuantity());
+        productService.cancelReservation(productToCancel, command.getOrderId());
+
+        ProductReservationCancelledEvent productReservationCancelledEvent =
+                new ProductReservationCancelledEvent(command.getProductId(), command.getOrderId());
+
+        kafkaTemplate.send(productEventsTopicName, productReservationCancelledEvent);
     }
 }

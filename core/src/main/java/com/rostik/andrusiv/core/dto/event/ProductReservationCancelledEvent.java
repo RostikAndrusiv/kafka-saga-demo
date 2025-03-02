@@ -1,14 +1,14 @@
-package com.rostik.andrusiv.core.dto.command;
+package com.rostik.andrusiv.core.dto.event;
 
 import lombok.*;
 
 import java.util.UUID;
 
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReserveProductCommand {
+@Getter
+@Setter
+public class ProductReservationCancelledEvent {
     private UUID productId;
-    private Integer productQuantity;
     private UUID orderId;
 }
