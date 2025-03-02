@@ -1,7 +1,9 @@
 server:
-  port: 8080
+  port: 8089
 
 spring:
+  application:
+    name: order-service
   jackson:
     deserialization:
       fail-on-unknown-properties: true
@@ -19,6 +21,22 @@ spring:
       group-id: orders-ms
       properties:
         spring.json.trusted.packages: com.rostik.andrusiv.core.*
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 30
+    lease-expiration-duration-in-seconds: 90
+
+logging:
+  level:
+    com.netflix.eureka: DEBUG
+    com.rostik.andrusiv: INFO
 
 order:
   events:
