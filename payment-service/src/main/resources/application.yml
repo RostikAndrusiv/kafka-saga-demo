@@ -46,7 +46,8 @@ logging:
 
 remote:
   ccp:
-    url: http://localhost:8084
+    service:
+      name: credit-card-service
 payment:
   commands:
     topic:

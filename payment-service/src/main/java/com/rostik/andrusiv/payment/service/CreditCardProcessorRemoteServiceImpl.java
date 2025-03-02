@@ -18,7 +18,7 @@ public class CreditCardProcessorRemoteServiceImpl implements CreditCardProcessor
 
     public CreditCardProcessorRemoteServiceImpl(
             RestTemplate restTemplate,
-            @Value("${remote.ccp.url}") String ccpRemoteServiceUrl
+            @Value("${remote.ccp.service.name}") String ccpRemoteServiceUrl
     ) {
         this.restTemplate = restTemplate;
         this.ccpRemoteServiceUrl = ccpRemoteServiceUrl;
@@ -29,7 +29,7 @@ public class CreditCardProcessorRemoteServiceImpl implements CreditCardProcessor
     public void process(BigInteger cardNumber, BigDecimal paymentAmount) {
         try {
             var request = new CreditCardProcessRequest(cardNumber, paymentAmount);
-            restTemplate.postForObject(ccpRemoteServiceUrl + "/ccp/process", request, CreditCardProcessRequest.class);
+            restTemplate.postForObject("http://" + ccpRemoteServiceUrl + "/ccp/process", request, CreditCardProcessRequest.class);
         } catch (ResourceAccessException e) {
             throw new CreditCardProcessorUnavailableException(e);
         }
