@@ -7,6 +7,7 @@ import com.rostik.andrusiv.core.exception.OrderNotFoundException;
 import com.rostik.andrusiv.core.type.OrderStatus;
 import com.rostik.andrusiv.order.jpa.entity.OrderEntity;
 import com.rostik.andrusiv.order.jpa.repository.OrderRepository;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
+
+import static com.rostik.andrusiv.core.helper.Constants.MESSAGE_ID;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -34,6 +37,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order placeOrder(Order order) {
         OrderEntity entity = new OrderEntity();
+
         BeanUtils.copyProperties(order, entity);
         entity.setStatus(OrderStatus.CREATED);
         orderRepository.save(entity);
@@ -75,7 +79,10 @@ public class OrderServiceImpl implements OrderService {
                 order.getProductQuantity()
         );
 
-        String messageKey = order.getOrderId().toString();
-        kafkaTemplate.send(ordersEventTopicName, messageKey, placedOrder);
+        String messageKey = entity.getId().toString();
+        ProducerRecord<String, Object> record = new ProducerRecord<>(ordersEventTopicName, messageKey, placedOrder);
+        record.headers().add(MESSAGE_ID, UUID.randomUUID().toString().getBytes());
+
+        kafkaTemplate.send(record);
     }
 }

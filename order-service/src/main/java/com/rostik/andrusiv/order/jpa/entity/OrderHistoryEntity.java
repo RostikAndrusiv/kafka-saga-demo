@@ -8,7 +8,7 @@ import lombok.Setter;
 import java.sql.Timestamp;
 import java.util.UUID;
 
-@Table(name = "orders_history")
+@Table(name = "order_history")
 @Entity
 @Getter
 @Setter

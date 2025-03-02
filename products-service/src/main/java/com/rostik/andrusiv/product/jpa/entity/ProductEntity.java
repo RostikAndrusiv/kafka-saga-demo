@@ -9,7 +9,7 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-@Table(name = "products")
+@Table(name = "product")
 @Entity
 @Getter
 @Setter
