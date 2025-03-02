@@ -1,4 +1,4 @@
-package com.rostik.andrusiv.core.dto.event;
+package com.rostik.andrusiv.core.dto.command;
 
 import lombok.*;
 

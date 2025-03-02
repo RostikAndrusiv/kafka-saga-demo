@@ -80,6 +80,14 @@ public class OrderSaga {
     }
 
     @KafkaHandler
+    public void handleProductReservationFailedEvent(@Payload ProductReservationFailedEvent event) {
+        CancelProductReservationCommand command = new CancelProductReservationCommand(
+                event.getProductId(), event.getOrderId(), event.getProductQuantity());
+        String messageKey = event.getOrderId().toString();
+        kafkaTemplate.send(productsCommandTopicName, messageKey, command);
+    }
+
+    @KafkaHandler
     public void handleOrderApprovedEvent(@Payload OrderApprovedEvent event) {
         orderHistoryService.add(event.getOrderId(), OrderStatus.APPROVED);
     }
