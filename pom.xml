@@ -27,6 +27,8 @@
     <version>${revision}</version>
 
     <modules>
+        <module>api-gateway-service</module>
+        <module>eureka-service</module>
         <module>payment-service</module>
         <module>order-service</module>
         <module>products-service</module>

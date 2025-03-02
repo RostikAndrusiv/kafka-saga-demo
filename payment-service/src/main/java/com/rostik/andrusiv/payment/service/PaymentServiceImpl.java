@@ -3,6 +3,7 @@ package com.rostik.andrusiv.payment.service;
 import com.rostik.andrusiv.core.dto.Payment;
 import com.rostik.andrusiv.payment.jpa.entity.PaymentEntity;
 import com.rostik.andrusiv.payment.jpa.repository.PaymentRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +12,7 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class PaymentServiceImpl implements PaymentService {
     public static final String SAMPLE_CREDIT_CARD_NUMBER = "374245455400126";
@@ -27,7 +29,18 @@ public class PaymentServiceImpl implements PaymentService {
     public Payment process(Payment payment) {
         BigDecimal totalPrice = payment.getProductPrice()
                 .multiply(new BigDecimal(payment.getProductQuantity()));
-        ccpRemoteService.process(new BigInteger(SAMPLE_CREDIT_CARD_NUMBER), totalPrice);
+
+        log.info("Processing payment for Order ID: {}, Product ID: {}, Total Price: {}",
+                payment.getOrderId(), payment.getProductId(), totalPrice);
+
+        try {
+            ccpRemoteService.process(new BigInteger(SAMPLE_CREDIT_CARD_NUMBER), totalPrice);
+            log.info("Credit card payment processed successfully for Order ID: {}", payment.getOrderId());
+        } catch (Exception e) {
+            log.error("Error processing payment for Order ID: {}", payment.getOrderId(), e);
+            throw e;  // rethrow or handle appropriately
+        }
+
         PaymentEntity paymentEntity = new PaymentEntity();
         BeanUtils.copyProperties(payment, paymentEntity);
         paymentRepository.save(paymentEntity);
@@ -35,12 +48,16 @@ public class PaymentServiceImpl implements PaymentService {
         var processedPayment = new Payment();
         BeanUtils.copyProperties(payment, processedPayment);
         processedPayment.setId(paymentEntity.getId());
+
+        log.info("Payment successfully processed and saved for Order ID: {}", payment.getOrderId());
         return processedPayment;
     }
 
     @Override
     public List<Payment> findAll() {
+        log.info("Retrieving all payments from repository.");
         return paymentRepository.findAll().stream().map(entity -> new Payment(entity.getId(), entity.getOrderId(), entity.getProductId(), entity.getProductPrice(), entity.getProductQuantity())
         ).collect(Collectors.toList());
     }
 }
+

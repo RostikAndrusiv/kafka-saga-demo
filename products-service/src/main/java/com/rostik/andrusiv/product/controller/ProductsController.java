@@ -25,18 +25,27 @@ public class ProductsController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<Product> findAll() {
-        return productService.findAll();
+        log.info("Fetching all products");
+        List<Product> products = productService.findAll();
+        log.info("Found {} products", products.size());
+        return products;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ProductCreationResponse save(@RequestBody @Valid ProductCreationRequest request) {
+        log.info("Creating product with details: {}", request);
+
         var product = new Product();
         BeanUtils.copyProperties(request, product);
+
         Product result = productService.save(product);
 
         var productCreationResponse = new ProductCreationResponse();
         BeanUtils.copyProperties(result, productCreationResponse);
+
+        log.info("Product created successfully with ID: {}", result.getId());
+
         return productCreationResponse;
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("ccp")
 public class CreditCardProcessorController {
 
+    //mock success response
     @PostMapping("/process")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void processCreditCard(@RequestBody @Valid CreditCardProcessRequest request) {
