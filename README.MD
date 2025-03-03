@@ -8,6 +8,8 @@ In case of failure, **compensating transactions** are triggered to revert action
 - **Kafka-based communication** between services.
 - **Saga Pattern** for managing distributed transactions.
 - **Compensating Transactions** to handle failures and maintain consistency.
+- **Idempotent producer**
+- **Idempotent order consumer**
 - **Event-driven architecture** for seamless communication between services.
 
 ## Requirements
