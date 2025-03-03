@@ -16,13 +16,32 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\":\"bayraktar\",\n    \"price\":100500,\n    \"quantity\":5\n\n}",
+							"raw": "{\n    \"name\":\"F-16\",\n    \"price\":100500,\n    \"quantity\":5\n\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
+						"url": {
+							"raw": "http://localhost:8080/products",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AllProducts",
+					"request": {
+						"method": "GET",
+						"header": [],
 						"url": {
 							"raw": "http://localhost:8080/products",
 							"protocol": "http",
@@ -49,7 +68,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"customerId\": \"2f021203-928b-4c94-9173-000000000000\",\n    \"productQuantity\": 100\n}",
+							"raw": "{\n    \"productId\": \"55e71067-7eed-4dc6-8390-739abe81335e\",\n    \"customerId\": \"2f021203-928b-4c94-9173-000000000000\",\n    \"productQuantity\": 1\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -76,7 +95,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/orders/8a3078b1-1606-4f1e-94f3-bdf0225bd868/history",
+							"raw": "http://localhost:8080/orders/c3094d26-f85b-47ad-aa44-efa75804aacb/history",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -84,8 +103,27 @@
 							"port": "8080",
 							"path": [
 								"orders",
-								"8a3078b1-1606-4f1e-94f3-bdf0225bd868",
+								"c3094d26-f85b-47ad-aa44-efa75804aacb",
 								"history"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AllOrders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/orders",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"orders"
 							]
 						}
 					},

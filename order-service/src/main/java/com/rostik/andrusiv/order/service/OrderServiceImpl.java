@@ -5,6 +5,7 @@ import com.rostik.andrusiv.core.dto.event.OrderApprovedEvent;
 import com.rostik.andrusiv.core.dto.event.OrderCreatedEvent;
 import com.rostik.andrusiv.core.exception.OrderNotFoundException;
 import com.rostik.andrusiv.core.type.OrderStatus;
+import com.rostik.andrusiv.order.dto.CreateOrderResponse;
 import com.rostik.andrusiv.order.jpa.entity.OrderEntity;
 import com.rostik.andrusiv.order.jpa.repository.OrderRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 import static com.rostik.andrusiv.core.helper.Constants.MESSAGE_ID;
@@ -84,6 +86,19 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.save(order);
 
         log.info("Order with Order ID: {} rejected", orderId);
+    }
+
+    @Override
+    public List<CreateOrderResponse> findAllOrders() {
+        log.info("Fetching all orders orders");
+        List<CreateOrderResponse> orderDtos = orderRepository.findAll().stream()
+                .map(entity -> {
+                    CreateOrderResponse createdOrder = new CreateOrderResponse();
+                    BeanUtils.copyProperties(entity, createdOrder);
+                    return createdOrder;
+                }).toList();
+        log.info("found {} orders", orderDtos.size());
+        return orderDtos;
     }
 
     private void sendPlacedOrderEvent(Order order, OrderEntity entity) {

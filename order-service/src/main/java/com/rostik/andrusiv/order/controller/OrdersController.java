@@ -43,6 +43,14 @@ public class OrdersController {
         return response;
     }
 
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<CreateOrderResponse> getAll() {
+        log.info("Retrieving all orders...");
+        List<CreateOrderResponse> allOrders = orderService.findAllOrders();
+        return allOrders;
+    }
+
     @GetMapping("/{orderId}/history")
     @ResponseStatus(HttpStatus.OK)
     public List<OrderHistoryResponse> getOrderHistory(@PathVariable UUID orderId) {

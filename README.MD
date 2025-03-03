@@ -45,12 +45,12 @@ mvn spring-boot:run
 
 ## Workflow example
 1. Import postman collection
-2. create product
+2. add product
 3. place order (set product id equal to id from response in prev step)
 4. track status in history table 
 ``http://localhost:8080/orders/{orderId}/history``
 
-in case of credit card service unavailable(stopped) or order quantity>created product quantity transaction will be rolled back. Status is stored in 
+in case of credit card service unavailable(stopped) or order quantity>created product quantity transaction will be rolled back. Status is stored in history table1
 
 
 
